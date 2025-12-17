@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StyleFinder: Your Global Wardrobe</title>
+
+  <!-- React -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- React Router -->
+  <script src="https://unpkg.com/react-router-dom@6/umd/react-router-dom.development.js"></script>
+
+  <!-- Framer Motion -->
+  <script src="https://unpkg.com/framer-motion/dist/framer-motion.umd.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide-react/dist/lucide-react.umd.js"></script>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { @apply bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800 font-sans; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/javascript">
+    const { BrowserRouter, Routes, Route, Link, useLocation } = ReactRouterDOM;
+    const { motion } = window['framer-motion'];
+    const { Home, User, Heart, ChevronLeft, ChevronRight, Search, UserCircle } = window['lucide-react'];
+
+    // Navbar
+    function Navbar() {
+      return (
+        <div className="w-full flex justify-between items-center p-4 bg-white/5 backdrop-blur-xl border-b border-white/5 shadow-lg fixed top-0 z-50">
+          <h1 className="text-xl md:text-2xl font-bold text-white">
+            StyleFinder: Your Global Wardrobe
+          </h1>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full">
+              <Search className="w-4 h-4 text-white"/>
+              <input type="text" placeholder="Search luxury" className="bg-transparent focus:outline-none text-white text-sm"/>
+            </div>
+            <UserCircle className="w-7 h-7 text-white hover:text-neutral-300 cursor-pointer"/>
+          </div>
+        </div>
+      );
+    }
+
+    // Sidebar
+    function Sidebar() {
+      const location = useLocation();
+      const nav = [
+        { title: "Discover", path: "/", icon: Home },
+        { title: "Preferences", path: "/preferences", icon: User },
+        { title: "Favorites", path: "/favorites", icon: Heart },
+      ];
+      return (
+        <aside className="w-72 bg-white/5 backdrop-blur-xl border-l border-white/5 shadow-lg p-6 hidden md:block mt-20">
+          <p className="text-xs text-neutral-400 mb-8 uppercase">Your Global Wardrobe</p>
+          {nav.map(item => (
+            <Link
+              key={item.title}
+              to={item.path}
+              className={`flex items-center gap-3 px-4 py-3 rounded-2xl mb-3 transition-all ${
+                location.pathname === item.path ? "bg-white text-black" : "hover:bg-white/10"
+              }`}
+            >
+              <item.icon className="w-5 h-5"/>
+              <span className="tracking-wide">{item.title}</span>
+            </Link>
+          ))}
+        </aside>
+      );
+    }
+
+    // Layout
+    function Layout({ children }) {
+      return (
+        <div className="min-h-screen flex pt-20 text-white">
+          <Sidebar />
+          <main className="flex-1 p-8 md:pl-8">{children}</main>
+          <Navbar />
+        </div>
+      );
+    }
+
+    // Clothing Card
+    function ClothingCard({ item, onToggleFavorite }) {
+      const [index, setIndex] = React.useState(0);
+      return (
+        <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:0.6}}>
+          <div className="group bg-neutral-900 rounded-3xl overflow-hidden shadow-2xl border border-white/5 hover:shadow-3xl transition-shadow duration-500">
+            <div className="relative h-80 overflow-hidden">
+              <img src={item.images[index]} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                onError={(e)=>e.target.src="https://images.unsplash.com/photo-1521335629791-ce4aec67dd47"}/>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+              {item.images.length>1 && <>
+                <button onClick={()=>setIndex((index-1+item.images.length)%item.images.length)} className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-md p-3 rounded-full hover:bg-white/20 transition-colors"><ChevronLeft className="w-5 h-5"/></button>
+                <button onClick={()=>setIndex((index+1)%item.images.length)} className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-md p-3 rounded-full hover:bg-white/20 transition-colors"><ChevronRight className="w-5 h-5"/></button>
+              </>}
+
+              <button onClick={onToggleFavorite} className="absolute top-4 right-4 bg-white/10 backdrop-blur-md p-3 rounded-full hover:bg-red-500 transition-colors duration-300">
+                <Heart className={`w-5 h-5 transition-all ${item.favorite?"fill-red-500 text-red-500 scale-125":"text-white"}`}/>
+              </button>
+            </div>
+            <div className="p-5">
+              <h3 className="font-semibold text-lg tracking-wide">{item.name}</h3>
+              <p className="text-sm text-neutral-400">{item.category}</p>
+              <p className="font-semibold text-xl mt-2">${item.price}</p>
+            </div>
+          </div>
+        </motion.div>
+      );
+    }
+
+    // Sample Items
+    const SAMPLE_ITEMS = [
+      {id:1,name:"Italian Wool Coat",category:"Outerwear",price:890,images:["https://images.unsplash.com/photo-1512436991641-6745cdb1723f"],favorite:false},
+      {id:2,name:"Minimal Leather Sneakers",category:"Footwear",price:650,images:["https://images.unsplash.com/photo-1542291026-7eec264c27ff"],favorite:false}
+    ];
+
+    // Pages
+    function Discover() {
+      const [items,setItems]=React.useState(SAMPLE_ITEMS);
+      const toggleFav=id=>setItems(prev=>prev.map(i=>i.id===id?{...i,favorite:!i.favorite}:i));
+      return (
+        <>
+          <motion.h2 className="text-3xl font-semibold tracking-wide mb-8" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.5}}>Discover</motion.h2>
+          <div className="grid md:grid-cols-3 gap-8">{items.map(item=><ClothingCard key={item.id} item={item} onToggleFavorite={()=>toggleFav(item.id)}/>)}</div>
+        </>
+      );
+    }
+    function Preferences(){return(<><motion.h2 className="text-3xl font-semibold mb-4" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.5}}>Preferences</motion.h2><p className="text-neutral-400">Refine your luxury taste.</p></>);}
+    function Favorites(){return(<><motion.h2 className="text-3xl font-semibold mb-4" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.5}}>Favorites</motion.h2><p className="text-neutral-400">Your curated luxury picks.</p></>);}
+
+    function App(){return(<BrowserRouter><Layout><Routes><Route path="/" element={<Discover/>}/><Route path="/preferences" element={<Preferences/>}/><Route path="/favorites" element={<Favorites/>}/></Routes></Layout></BrowserRouter>);}
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+  </script>
+</body>
+</html>
