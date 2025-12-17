@@ -1,9 +1,9 @@
-\name: Deploy React app to GitHub Pages
+name: Deploy React app to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
-  workflow_dispatch:
+    branches: ["main"]      # Trigger deployment on pushes to main
+  workflow_dispatch:        # Allow manual triggering
 
 permissions:
   contents: read
@@ -21,11 +21,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      # 1. Checkout repo
+      # 1. Checkout the repository
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. Configure Pages environment
+      # 2. Configure GitHub Pages environment
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
@@ -38,7 +38,7 @@ jobs:
       # 4. Install dependencies inside React app folder
       - name: Install dependencies
         run: |
-          cd style-finder-   # change to your React app folder
+          cd style-finder-   # Change this if your React app folder has a different name
           npm install
 
       # 5. Build React app
@@ -53,4 +53,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./style-finder-/build
-
