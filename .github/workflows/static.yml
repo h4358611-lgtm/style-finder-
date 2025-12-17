@@ -2,8 +2,8 @@ name: Deploy React app to GitHub Pages
 
 on:
   push:
-    branches: ["main"]      # Deploy on pushes to main
-  workflow_dispatch:        # Allow manual triggering
+    branches: ["main"]      # Trigger deployment on pushes to main
+  workflow_dispatch:        # Allow manual workflow run
 
 permissions:
   contents: read
@@ -21,11 +21,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      # 1. Checkout repo
+      # 1. Checkout the repository
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. Configure Pages environment
+      # 2. Configure GitHub Pages environment
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
