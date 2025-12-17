@@ -36,17 +36,21 @@ jobs:
         with:
           node-version: '20'
 
-      # 4. Install dependencies (no folder change needed)
-      - name: Install dependencies
-        run: npm install
+     # 4. Install dependencies
+- name: Install dependencies
+  run: |
+    cd style-finder-      # your React app folder
+    npm install
 
-      # 5. Build React app
-      - name: Build React app
-        run: npm run build
+# 5. Build React app
+- name: Build React app
+  run: |
+    cd style-finder-
+    npm run build
 
-      # 6. Deploy build folder to GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+# 6. Deploy build folder
+- name: Deploy to GitHub Pages
+  uses: peaceiris/actions-gh-pages@v3
+  with:
+    github_token: ${{ secrets.GITHUB_TOKEN }}
+    publish_dir: ./style-finder-/build
