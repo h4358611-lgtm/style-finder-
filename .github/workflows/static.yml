@@ -1,4 +1,4 @@
-# Full workflow for deploying React app to GitHub Pages
+# Workflow for deploying React app to GitHub Pages
 name: Deploy React app to GitHub Pages
 
 on:
@@ -36,21 +36,17 @@ jobs:
         with:
           node-version: '20'
 
-      # 4. Install dependencies (inside the React app folder)
+      # 4. Install dependencies (no folder change needed)
       - name: Install dependencies
-        run: |
-          cd stylefinder.co
-          npm install
+        run: npm install
 
-      # 5. Build React app (inside the same folder)
+      # 5. Build React app
       - name: Build React app
-        run: |
-          cd stylefinder.co
-          npm run build
+        run: npm run build
 
       # 6. Deploy build folder to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./stylefinder.co/build
+          publish_dir: ./build
