@@ -2,8 +2,8 @@ name: Deploy React app to GitHub Pages
 
 on:
   push:
-    branches: ["main"]      # Trigger deployment on pushes to main
-  workflow_dispatch:        # Allow manual workflow run
+    branches: ["main"]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -21,29 +21,23 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      # 1. Checkout the repository
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. Configure GitHub Pages environment
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      # 3. Setup Node.js
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
 
-      # 4. Install dependencies (root folder)
       - name: Install dependencies
         run: npm install
 
-      # 5. Build React app
       - name: Build React app
         run: npm run build
 
-      # 6. Deploy build folder to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
