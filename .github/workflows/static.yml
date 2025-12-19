@@ -1,4 +1,4 @@
-name: Deploy static HTML site to GitHub Pages
+name: Deploy React App to GitHub Pages
 
 on:
   push:
@@ -10,21 +10,42 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
   deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+      # 1. Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+      # 2. Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
-      - name: Upload site artifact
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Build React app
+      - name: Build React app
+        run: npm run build
+
+      # 5. Upload the build folder to GitHub Pages
+      - name: Upload artifact for GitHub Pages
         uses: actions/upload-pages-artifact@v4
         with:
-          path: .   # <-- deploy everything in the repo root
+          path: build
 
+      # 6. Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
-        id: deployment
+        id: deploy
         uses: actions/deploy-pages@v1
