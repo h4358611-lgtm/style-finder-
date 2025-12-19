@@ -6,9 +6,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
   pages: write
-  id-token: write
+  contents: read
 
 jobs:
   deploy:
@@ -17,13 +16,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: .   # deploy everything from repo root
-
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v1
+        with:
+          # Publish the root directory
+          folder: . 
