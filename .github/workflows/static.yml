@@ -1,4 +1,4 @@
-name: Deploy static site to GitHub Pages
+name: Deploy Static HTML to GitHub Pages
 
 on:
   push:
@@ -17,10 +17,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+      - name: Upload artifact for Pages
+        uses: actions/upload-pages-artifact@v4
         with:
-          path: ./  # your index.html is in the repo root
+          path: ./  # root folder of your HTML app
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v1
