@@ -21,21 +21,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Setup GitHub Pages environment
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      # 3. Upload the site artifact (your index.html)
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: index.html
+          path: public   # <-- this must be a folder
 
-      # 4. Deploy artifact to GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
