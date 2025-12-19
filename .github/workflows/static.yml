@@ -1,4 +1,4 @@
-name: Deploy static site to GitHub Pages
+name: Deploy React/HTML App to GitHub Pages
 
 on:
   push:
@@ -6,18 +6,32 @@ on:
   workflow_dispatch:
 
 permissions:
-  pages: write
   contents: read
+  pages: write
+  id-token: write   # ✅ This is required for deploy-pages v1
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build React App (optional)
+        run: echo "No build needed for plain HTML/React CDN app"
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
         with:
-          # Publish the root directory
-          folder: . 
+          path: ./   # ✅ points to repo root
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v1
