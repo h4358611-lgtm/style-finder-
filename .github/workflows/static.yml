@@ -1,21 +1,22 @@
-name: Deploy React/HTML App to GitHub Pages
+name: Deploy React App to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
-  id-token: write   # ✅ This is required for deploy-pages v1
+  id-token: write
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Checkout repository
@@ -24,14 +25,22 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Build React App (optional)
-        run: echo "No build needed for plain HTML/React CDN app"
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+      - name: Install Node.js
+        uses: actions/setup-node@v3
         with:
-          path: ./   # ✅ points to repo root
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build React app
+        run: npm run build
+
+      - name: Upload artifact for deployment
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./build
 
       - name: Deploy to GitHub Pages
-        id: deploy
+        id: deployment
         uses: actions/deploy-pages@v1
