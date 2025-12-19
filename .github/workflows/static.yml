@@ -1,14 +1,10 @@
-name: Deploy Static HTML to GitHub Pages
+name: Deploy static site to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
   workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
 
 jobs:
   deploy:
@@ -17,11 +13,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Upload artifact for Pages
+      - name: Upload site to GitHub Pages
         uses: actions/upload-pages-artifact@v4
         with:
-          path: ./  # root folder of your HTML app
+          path: .
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v1
-
