@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LuxWardrobe: Global Luxury Closet</title>
+  <title>Auriant – Luxury Style Explorer</title>
 
-  <!-- React & ReactDOM -->
+  <!-- React / ReactDOM -->
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 
-  <!-- React Router -->
+  <!-- React Router (HashRouter) -->
   <script src="https://unpkg.com/react-router-dom@6/umd/react-router-dom.development.js"></script>
 
   <!-- Framer Motion -->
@@ -18,160 +18,77 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide-react/dist/lucide-react.umd.js"></script>
 
-  <!-- Tailwind CSS -->
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Babel (needed for JSX) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <style>
     body { @apply bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800 font-sans; }
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
   </style>
 </head>
 <body>
   <div id="root"></div>
 
-  <script type="text/javascript">
-    const { BrowserRouter, Routes, Route, Link, useLocation } = ReactRouterDOM;
+  <script type="text/babel">
+    const { HashRouter, Routes, Route, Link, useLocation } = ReactRouterDOM;
     const { motion } = window['framer-motion'];
     const { Home, User, Heart, ChevronLeft, ChevronRight, Search, UserCircle } = window['lucide-react'];
 
-    // ---------------- Navbar ----------------
-    function Navbar() {
+    function Navbar(){
       return (
-        <div className="w-full flex justify-between items-center p-4 bg-white/5 backdrop-blur-xl border-b border-white/5 shadow-lg fixed top-0 z-50">
-          <h1 className="text-xl md:text-2xl font-bold text-white">LuxWardrobe</h1>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full">
-              <Search className="w-4 h-4 text-white"/>
-              <input type="text" placeholder="Search luxury" className="bg-transparent focus:outline-none text-white text-sm"/>
-            </div>
-            <UserCircle className="w-7 h-7 text-white hover:text-neutral-300 cursor-pointer"/>
-          </div>
+        <div className="fixed top-0 left-0 right-0 p-4 bg-black/70 text-white text-xl font-bold">
+          Auriant
         </div>
       );
     }
 
-    // ---------------- Sidebar ----------------
-    function Sidebar() {
-      const location = useLocation();
+    function Sidebar(){
+      const loc = useLocation();
       const nav = [
-        { title: "Discover", path: "/", icon: Home },
-        { title: "Preferences", path: "/preferences", icon: User },
-        { title: "Favorites", path: "/favorites", icon: Heart },
+        { title:'Discover', path:'/', icon:Home },
+        { title:'Prefs', path:'/preferences', icon:User },
+        { title:'Faves', path:'/favorites', icon:Heart },
       ];
       return (
-        <aside className="w-72 bg-white/5 backdrop-blur-xl border-l border-white/5 shadow-lg p-6 hidden md:block mt-20">
-          <p className="text-xs text-neutral-400 mb-8 uppercase">Your Global Closet</p>
-          {nav.map(item => (
-            <Link
-              key={item.title}
-              to={item.path}
-              className={`flex items-center gap-3 px-4 py-3 rounded-2xl mb-3 transition-all ${location.pathname === item.path ? "bg-white text-black" : "hover:bg-white/10"}`}
-            >
-              <item.icon className="w-5 h-5"/>
-              <span className="tracking-wide">{item.title}</span>
+        <aside className="hidden md:block w-60 p-4 bg-black/30 text-white fixed top-16 left-0 bottom-0">
+          {nav.map(i=>(
+            <Link key={i.title} to={i.path} className={`block p-2 ${loc.pathname===i.path?'bg-white text-black':''}`}>
+              <i.icon className="inline-block w-5 h-5 mr-2"/> {i.title}
             </Link>
           ))}
         </aside>
       );
     }
 
-    // ---------------- Layout ----------------
-    function Layout({ children }) {
-      return (
-        <div className="min-h-screen flex pt-20 text-white">
-          <Sidebar />
-          <main className="flex-1 p-8 md:pl-8">{children}</main>
-          <Navbar />
-        </div>
-      );
+    function Discover(){
+      return <div className="pt-24 text-white text-2xl font-semibold">Discover Page</div>;
     }
-
-    // ---------------- Clothing Card ----------------
-    function ClothingCard({ item, onToggleFavorite }) {
-      const [index, setIndex] = React.useState(0);
-      return (
-        <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:0.6}}>
-          <div className="group bg-neutral-900 rounded-3xl overflow-hidden shadow-2xl border border-white/5 hover:shadow-3xl transition-shadow duration-500">
-            <div className="relative h-80 overflow-hidden">
-              <img src={item.images[index]} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                onError={(e)=>e.target.src="https://images.unsplash.com/photo-1521335629791-ce4aec67dd47"}/>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-              {item.images.length>1 && <>
-                <button onClick={()=>setIndex((index-1+item.images.length)%item.images.length)} className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-md p-3 rounded-full hover:bg-white/20 transition-colors"><ChevronLeft className="w-5 h-5"/></button>
-                <button onClick={()=>setIndex((index+1)%item.images.length)} className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-md p-3 rounded-full hover:bg-white/20 transition-colors"><ChevronRight className="w-5 h-5"/></button>
-              </>}
-
-              <button onClick={onToggleFavorite} className="absolute top-4 right-4 bg-white/10 backdrop-blur-md p-3 rounded-full hover:bg-red-500 transition-colors duration-300">
-                <Heart className={`w-5 h-5 transition-all ${item.favorite?"fill-red-500 text-red-500 scale-125":"text-white"}`}/>
-              </button>
-            </div>
-            <div className="p-5">
-              <h3 className="font-semibold text-lg tracking-wide">{item.name}</h3>
-              <p className="text-sm text-neutral-400">{item.category}</p>
-              <p className="font-semibold text-xl mt-2">${item.price}</p>
-            </div>
-          </div>
-        </motion.div>
-      );
-    }
-
-    // ---------------- Sample Items ----------------
-    const SAMPLE_ITEMS = [
-      {id:1,name:"Italian Wool Coat",category:"Outerwear",price:1290,images:["https://images.unsplash.com/photo-1512436991641-6745cdb1723f"],favorite:false},
-      {id:2,name:"Minimal Leather Sneakers",category:"Footwear",price:750,images:["https://images.unsplash.com/photo-1542291026-7eec264c27ff"],favorite:false},
-      {id:3,name:"Silk Evening Dress",category:"Formalwear",price:1990,images:["https://images.unsplash.com/photo-1520975915080-0f5e0428b4e0"],favorite:false},
-      {id:4,name:"Cashmere Sweater",category:"Knitwear",price:890,images:["https://images.unsplash.com/photo-1614033543327-4fbc7f57e9c3"],favorite:false},
-      {id:5,name:"Luxury Leather Bag",category:"Accessories",price:2100,images:["https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d"],favorite:false}
-    ];
-
-    // ---------------- Pages ----------------
-    function Discover() {
-      const [items,setItems]=React.useState(SAMPLE_ITEMS);
-      const toggleFav=id=>setItems(prev=>prev.map(i=>i.id===id?{...i,favorite:!i.favorite}:i));
-      return (
-        <>
-          <motion.h2 className="text-3xl font-semibold tracking-wide mb-8" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.5}}>Discover</motion.h2>
-          <div className="grid md:grid-cols-3 gap-8">{items.map(item=><ClothingCard key={item.id} item={item} onToggleFavorite={()=>toggleFav(item.id)}/>)}</div>
-        </>
-      );
-    }
-
     function Preferences(){
-      return (
-        <>
-          <motion.h2 className="text-3xl font-semibold mb-4" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.5}}>Preferences</motion.h2>
-          <p className="text-neutral-400">Refine your luxury taste and select your favorites.</p>
-        </>
-      );
+      return <div className="pt-24 text-white text-2xl font-semibold">Preferences Page</div>;
     }
-
     function Favorites(){
-      return (
-        <>
-          <motion.h2 className="text-3xl font-semibold mb-4" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.5}}>Favorites</motion.h2>
-          <p className="text-neutral-400">Your curated premium picks.</p>
-        </>
-      );
+      return <div className="pt-24 text-white text-2xl font-semibold">Favorites Page</div>;
     }
 
-    // ---------------- App ----------------
     function App(){
       return (
-        <BrowserRouter>
-          <Layout>
+        <HashRouter>
+          <Navbar/>
+          <Sidebar/>
+          <div className="ml-0 md:ml-64 p-4">
             <Routes>
               <Route path="/" element={<Discover/>}/>
               <Route path="/preferences" element={<Preferences/>}/>
               <Route path="/favorites" element={<Favorites/>}/>
             </Routes>
-          </Layout>
-        </BrowserRouter>
+          </div>
+        </HashRouter>
       );
     }
 
-    ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
 </body>
 </html>
