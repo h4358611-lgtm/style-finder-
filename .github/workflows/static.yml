@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # deploy when you push to main branch
+      - main   # deploy when you push to main branch
   workflow_dispatch:
 
 jobs:
@@ -15,16 +15,15 @@ jobs:
       id-token: write
 
     steps:
-      # 1️⃣ Checkout repo
+      # 1️⃣ Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Build / prepare artifact
-      # For a plain HTML app, no build needed
+      # 2️⃣ Upload Pages artifact (no deprecated actions)
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./  # path to your project root
+          path: ./    # root folder containing index.html
 
       # 3️⃣ Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
