@@ -1,10 +1,9 @@
 name: GitHub Pages Deploy
 
-# Trigger workflow on push to main or manual trigger
 on:
   push:
     branches:
-      - main
+      - main   # deploy when you push to main branch
   workflow_dispatch:
 
 jobs:
@@ -20,7 +19,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Upload artifact for GitHub Pages
+      # 2️⃣ Upload Pages artifact
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v1
         with:
@@ -29,4 +28,3 @@ jobs:
       # 3️⃣ Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v1
-
