@@ -1,4 +1,4 @@
-\name: GitHub Pages Deploy
+name: GitHub Pages Deploy
 
 # Trigger workflow on push to main or manual trigger
 on:
