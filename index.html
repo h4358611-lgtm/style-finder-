@@ -20,25 +20,18 @@
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Babel (needed for JSX) -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <style>
-    body { @apply bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800 font-sans; }
-  </style>
 </head>
-<body>
+<body class="bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800 font-sans">
   <div id="root"></div>
 
   <script type="text/babel">
     const { HashRouter, Routes, Route, Link, useLocation } = ReactRouterDOM;
     const { motion } = window['framer-motion'];
-    const { Home, User, Heart, ChevronLeft, ChevronRight, Search, UserCircle } = window['lucide-react'];
+    const { Home, User, Heart } = window['lucide-react'];
 
     function Navbar(){
       return (
-        <div className="fixed top-0 left-0 right-0 p-4 bg-black/70 text-white text-xl font-bold">
+        <div className="fixed top-0 left-0 right-0 p-4 bg-black/70 text-white text-xl font-bold z-10">
           Auriant
         </div>
       );
@@ -53,8 +46,8 @@
       ];
       return (
         <aside className="hidden md:block w-60 p-4 bg-black/30 text-white fixed top-16 left-0 bottom-0">
-          {nav.map(i=>(
-            <Link key={i.title} to={i.path} className={`block p-2 ${loc.pathname===i.path?'bg-white text-black':''}`}>
+          {nav.map(i => (
+            <Link key={i.title} to={i.path} className={`block p-2 my-1 rounded ${loc.pathname===i.path ? 'bg-white text-black' : 'hover:bg-white/20'}`}>
               <i.icon className="inline-block w-5 h-5 mr-2"/> {i.title}
             </Link>
           ))}
@@ -65,9 +58,11 @@
     function Discover(){
       return <div className="pt-24 text-white text-2xl font-semibold">Discover Page</div>;
     }
+
     function Preferences(){
       return <div className="pt-24 text-white text-2xl font-semibold">Preferences Page</div>;
     }
+
     function Favorites(){
       return <div className="pt-24 text-white text-2xl font-semibold">Favorites Page</div>;
     }
