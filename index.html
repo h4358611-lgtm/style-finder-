@@ -12,30 +12,30 @@
   <!-- React Router -->
   <script src="https://unpkg.com/react-router-dom@6/umd/react-router-dom.development.js"></script>
 
-  <!-- Framer Motion -->
+  <!-- Framer Motion (UMD) -->
   <script src="https://unpkg.com/framer-motion/dist/framer-motion.umd.js"></script>
 
-  <!-- Lucide Icons -->
+  <!-- Lucide Icons (UMD) -->
   <script src="https://unpkg.com/lucide-react/dist/lucide-react.umd.js"></script>
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Babel (REQUIRED) -->
+  <!-- Babel (required for JSX) -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 
-<body class="bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800 text-white font-sans">
+<body class="bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800 text-white">
   <div id="root"></div>
 
   <script type="text/babel">
     const { HashRouter, Routes, Route, Link, useLocation } = ReactRouterDOM;
-    const { motion, AnimatePresence } = window["framer-motion"];
-    const { Home, User, Heart } = window["lucide-react"];
+    const { motion, AnimatePresence } = window.framerMotion;
+    const { Home, User, Heart } = window.lucideReact;
 
     function Navbar() {
       return (
-        <div className="fixed top-0 left-0 right-0 z-50 backdrop-blur bg-black/60 px-6 py-4 text-2xl font-semibold tracking-wide">
+        <div className="fixed top-0 left-0 right-0 z-50 backdrop-blur bg-black/60 px-6 py-4 text-2xl font-semibold">
           Auriant
         </div>
       );
@@ -56,9 +56,9 @@
               key={i.title}
               to={i.path}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-2 transition
-              ${loc.pathname === i.path
-                ? "bg-white text-black"
-                : "hover:bg-white/10"}`}
+                ${loc.pathname === i.path
+                  ? "bg-white text-black"
+                  : "hover:bg-white/10"}`}
             >
               <i.icon className="w-5 h-5" />
               {i.title}
@@ -104,15 +104,36 @@
     );
 
     function Discover() {
-      return <Page><h1 className="text-3xl font-bold">Discover Luxury</h1></Page>;
+      return (
+        <Page>
+          <h1 className="text-3xl font-bold mb-4">Discover Luxury</h1>
+          <p className="text-white/70">
+            Curated fashion based on your vibe.
+          </p>
+        </Page>
+      );
     }
 
     function Preferences() {
-      return <Page><h1 className="text-3xl font-bold">Your Preferences</h1></Page>;
+      return (
+        <Page>
+          <h1 className="text-3xl font-bold mb-4">Your Preferences</h1>
+          <p className="text-white/70">
+            Choose styles, colors, and fits.
+          </p>
+        </Page>
+      );
     }
 
     function Favorites() {
-      return <Page><h1 className="text-3xl font-bold">Saved Favorites</h1></Page>;
+      return (
+        <Page>
+          <h1 className="text-3xl font-bold mb-4">Saved Favorites</h1>
+          <p className="text-white/70">
+            Your liked pieces live here.
+          </p>
+        </Page>
+      );
     }
 
     function App() {
