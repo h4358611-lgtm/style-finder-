@@ -6,14 +6,14 @@
   <title>Auriant – Style Finder</title>
 
   <!-- React UMD -->
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
 
   <!-- React Router DOM UMD -->
-  <script src="https://unpkg.com/react-router-dom@6/umd/react-router-dom.development.js"></script>
+  <script src="https://unpkg.com/react-router-dom@6/umd/react-router-dom.development.js" crossorigin></script>
 
   <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide-react/dist/lucide-react.umd.js"></script>
+  <script src="https://unpkg.com/lucide-react/dist/lucide-react.umd.js" crossorigin></script>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -23,78 +23,82 @@
   <div id="root"></div>
 
   <script>
-    const { HashRouter, Routes, Route, Link, useLocation } = ReactRouterDOM;
-    const { Home, User, Heart } = lucideReact;
+    window.onload = () => {
+      const { HashRouter, Routes, Route, Link, useLocation } = ReactRouterDOM;
+      const { Home, User, Heart } = lucideReact;
 
-    // Navbar Component
-    function Navbar() {
-      return React.createElement('div', { className: "fixed top-0 left-0 right-0 z-50 bg-black/70 backdrop-blur px-6 py-4 text-2xl font-semibold" }, "Auriant");
-    }
+      // Navbar Component
+      function Navbar() {
+        return React.createElement('div', {
+          className: "fixed top-0 left-0 right-0 z-50 bg-black/70 backdrop-blur px-6 py-4 text-2xl font-semibold"
+        }, "Auriant");
+      }
 
-    // Sidebar Component
-    function Sidebar() {
-      const loc = useLocation();
-      const nav = [
-        { title: "Discover", path: "/", icon: Home },
-        { title: "Preferences", path: "/preferences", icon: User },
-        { title: "Favorites", path: "/favorites", icon: Heart },
-      ];
+      // Sidebar Component
+      function Sidebar() {
+        const loc = useLocation();
+        const nav = [
+          { title: "Discover", path: "/", icon: Home },
+          { title: "Preferences", path: "/preferences", icon: User },
+          { title: "Favorites", path: "/favorites", icon: Heart },
+        ];
 
-      return React.createElement('aside', { className: "hidden md:block fixed top-16 left-0 bottom-0 w-64 p-4 bg-black/30" },
-        nav.map(i =>
-          React.createElement(Link, {
-            key: i.title,
-            to: i.path,
-            className: "flex items-center gap-3 px-4 py-3 rounded-xl mb-2 " + (loc.pathname === i.path ? "bg-white text-black" : "hover:bg-white/10")
-          }, React.createElement(i.icon, { className: "w-5 h-5" }), i.title)
-        )
-      );
-    }
-
-    // Mobile Navigation Component
-    function MobileNav() {
-      const loc = useLocation();
-      const nav = [
-        { path: "/", icon: Home },
-        { path: "/preferences", icon: User },
-        { path: "/favorites", icon: Heart },
-      ];
-
-      return React.createElement('div', { className: "md:hidden fixed bottom-0 left-0 right-0 bg-black/80 flex justify-around py-3" },
-        nav.map(i =>
-          React.createElement(Link, { key: i.path, to: i.path },
-            React.createElement(i.icon, { className: "w-6 h-6 " + (loc.pathname === i.path ? "text-white" : "text-white/50") })
+        return React.createElement('aside', { className: "hidden md:block fixed top-16 left-0 bottom-0 w-64 p-4 bg-black/30" },
+          nav.map(i =>
+            React.createElement(Link, {
+              key: i.title,
+              to: i.path,
+              className: "flex items-center gap-3 px-4 py-3 rounded-xl mb-2 " + (loc.pathname === i.path ? "bg-white text-black" : "hover:bg-white/10")
+            }, React.createElement(i.icon, { className: "w-5 h-5" }), i.title)
           )
-        )
-      );
-    }
+        );
+      }
 
-    // Page Component (fixed)
-    function Page({ title, text }) {
-      return React.createElement('div', { className: "pt-28" },
-        React.createElement('h1', { className: "text-3xl font-bold mb-3" }, title),
-        React.createElement('p', { className: "text-white/70" }, text)
-      );
-    }
+      // Mobile Navigation Component
+      function MobileNav() {
+        const loc = useLocation();
+        const nav = [
+          { path: "/", icon: Home },
+          { path: "/preferences", icon: User },
+          { path: "/favorites", icon: Heart },
+        ];
 
-    // Main App Component
-    function App() {
-      return React.createElement(HashRouter, null,
-        React.createElement(Navbar, null),
-        React.createElement(Sidebar, null),
-        React.createElement(MobileNav, null),
-        React.createElement('main', { className: "md:ml-64 px-6 pb-24" },
-          React.createElement(Routes, null,
-            React.createElement(Route, { path: "/", element: React.createElement(Page, { title: "Discover", text: "Find clothes based on your vibe." }) }),
-            React.createElement(Route, { path: "/preferences", element: React.createElement(Page, { title: "Preferences", text: "Set your style preferences." }) }),
-            React.createElement(Route, { path: "/favorites", element: React.createElement(Page, { title: "Favorites", text: "Your saved outfits." }) })
+        return React.createElement('div', { className: "md:hidden fixed bottom-0 left-0 right-0 bg-black/80 flex justify-around py-3" },
+          nav.map(i =>
+            React.createElement(Link, { key: i.path, to: i.path },
+              React.createElement(i.icon, { className: "w-6 h-6 " + (loc.pathname === i.path ? "text-white" : "text-white/50") })
+            )
           )
-        )
-      );
-    }
+        );
+      }
 
-    // Render App
-    ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App, null));
+      // Page Component
+      function Page({ title, text }) {
+        return React.createElement('div', { className: "pt-28" },
+          React.createElement('h1', { className: "text-3xl font-bold mb-3" }, title),
+          React.createElement('p', { className: "text-white/70" }, text)
+        );
+      }
+
+      // Main App Component
+      function App() {
+        return React.createElement(HashRouter, null,
+          React.createElement(Navbar, null),
+          React.createElement(Sidebar, null),
+          React.createElement(MobileNav, null),
+          React.createElement('main', { className: "md:ml-64 px-6 pb-24" },
+            React.createElement(Routes, null,
+              React.createElement(Route, { path: "/", element: React.createElement(Page, { title: "Discover", text: "Find clothes based on your vibe." }) }),
+              React.createElement(Route, { path: "/preferences", element: React.createElement(Page, { title: "Preferences", text: "Set your style preferences." }) }),
+              React.createElement(Route, { path: "/favorites", element: React.createElement(Page, { title: "Favorites", text: "Your saved outfits." }) })
+            )
+          )
+        );
+      }
+
+      // Render App
+      ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App, null));
+    }
   </script>
 </body>
 </html>
