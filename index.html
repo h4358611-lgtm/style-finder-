@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Auriant – Luxury Style Explorer</title>
+  <title>Auriant – Style Finder</title>
 
   <!-- React -->
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -12,16 +12,13 @@
   <!-- React Router -->
   <script src="https://unpkg.com/react-router-dom@6/umd/react-router-dom.development.js"></script>
 
-  <!-- Framer Motion (UMD) -->
-  <script src="https://unpkg.com/framer-motion/dist/framer-motion.umd.js"></script>
-
-  <!-- Lucide Icons (UMD) -->
+  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide-react/dist/lucide-react.umd.js"></script>
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Babel (required for JSX) -->
+  <!-- Babel -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 
@@ -30,12 +27,11 @@
 
   <script type="text/babel">
     const { HashRouter, Routes, Route, Link, useLocation } = ReactRouterDOM;
-    const { motion, AnimatePresence } = window.framerMotion;
     const { Home, User, Heart } = window.lucideReact;
 
     function Navbar() {
       return (
-        <div className="fixed top-0 left-0 right-0 z-50 backdrop-blur bg-black/60 px-6 py-4 text-2xl font-semibold">
+        <div className="fixed top-0 left-0 right-0 z-50 bg-black/70 backdrop-blur px-6 py-4 text-2xl font-semibold">
           Auriant
         </div>
       );
@@ -50,12 +46,12 @@
       ];
 
       return (
-        <aside className="hidden md:block fixed top-16 left-0 bottom-0 w-64 p-4 bg-black/30 backdrop-blur">
+        <aside className="hidden md:block fixed top-16 left-0 bottom-0 w-64 p-4 bg-black/30">
           {nav.map(i => (
             <Link
               key={i.title}
               to={i.path}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-2 transition
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-2
                 ${loc.pathname === i.path
                   ? "bg-white text-black"
                   : "hover:bg-white/10"}`}
@@ -77,7 +73,7 @@
       ];
 
       return (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-black/70 backdrop-blur flex justify-around py-3 z-50">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-black/80 flex justify-around py-3">
           {nav.map(i => (
             <Link key={i.path} to={i.path}>
               <i.icon
@@ -91,54 +87,16 @@
       );
     }
 
-    const Page = ({ children }) => (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        transition={{ duration: 0.3 }}
-        className="pt-28"
-      >
-        {children}
-      </motion.div>
-    );
-
-    function Discover() {
+    function Page({ title, text }) {
       return (
-        <Page>
-          <h1 className="text-3xl font-bold mb-4">Discover Luxury</h1>
-          <p className="text-white/70">
-            Curated fashion based on your vibe.
-          </p>
-        </Page>
-      );
-    }
-
-    function Preferences() {
-      return (
-        <Page>
-          <h1 className="text-3xl font-bold mb-4">Your Preferences</h1>
-          <p className="text-white/70">
-            Choose styles, colors, and fits.
-          </p>
-        </Page>
-      );
-    }
-
-    function Favorites() {
-      return (
-        <Page>
-          <h1 className="text-3xl font-bold mb-4">Saved Favorites</h1>
-          <p className="text-white/70">
-            Your liked pieces live here.
-          </p>
-        </Page>
+        <div className="pt-28">
+          <h1 className="text-3xl font-bold mb-3">{title}</h1>
+          <p className="text-white/70">{text}</p>
+        </div>
       );
     }
 
     function App() {
-      const location = useLocation();
-
       return (
         <>
           <Navbar />
@@ -146,13 +104,20 @@
           <MobileNav />
 
           <main className="md:ml-64 px-6 pb-24">
-            <AnimatePresence mode="wait">
-              <Routes location={location} key={location.pathname}>
-                <Route path="/" element={<Discover />} />
-                <Route path="/preferences" element={<Preferences />} />
-                <Route path="/favorites" element={<Favorites />} />
-              </Routes>
-            </AnimatePresence>
+            <Routes>
+              <Route
+                path="/"
+                element={<Page title="Discover" text="Find clothes based on your vibe." />}
+              />
+              <Route
+                path="/preferences"
+                element={<Page title="Preferences" text="Set your style preferences." />}
+              />
+              <Route
+                path="/favorites"
+                element={<Page title="Favorites" text="Your saved outfits." />}
+              />
+            </Routes>
           </main>
         </>
       );
