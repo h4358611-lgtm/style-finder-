@@ -26,10 +26,12 @@
     const { HashRouter, Routes, Route, Link, useLocation } = ReactRouterDOM;
     const { Home, User, Heart } = lucideReact;
 
+    // Navbar Component
     function Navbar() {
       return React.createElement('div', { className: "fixed top-0 left-0 right-0 z-50 bg-black/70 backdrop-blur px-6 py-4 text-2xl font-semibold" }, "Auriant");
     }
 
+    // Sidebar Component
     function Sidebar() {
       const loc = useLocation();
       const nav = [
@@ -49,6 +51,7 @@
       );
     }
 
+    // Mobile Navigation Component
     function MobileNav() {
       const loc = useLocation();
       const nav = [
@@ -66,13 +69,15 @@
       );
     }
 
-    function Page(title, text) {
+    // Page Component (fixed)
+    function Page({ title, text }) {
       return React.createElement('div', { className: "pt-28" },
         React.createElement('h1', { className: "text-3xl font-bold mb-3" }, title),
         React.createElement('p', { className: "text-white/70" }, text)
       );
     }
 
+    // Main App Component
     function App() {
       return React.createElement(HashRouter, null,
         React.createElement(Navbar, null),
@@ -80,14 +85,15 @@
         React.createElement(MobileNav, null),
         React.createElement('main', { className: "md:ml-64 px-6 pb-24" },
           React.createElement(Routes, null,
-            React.createElement(Route, { path: "/", element: Page("Discover", "Find clothes based on your vibe.") }),
-            React.createElement(Route, { path: "/preferences", element: Page("Preferences", "Set your style preferences.") }),
-            React.createElement(Route, { path: "/favorites", element: Page("Favorites", "Your saved outfits.") })
+            React.createElement(Route, { path: "/", element: React.createElement(Page, { title: "Discover", text: "Find clothes based on your vibe." }) }),
+            React.createElement(Route, { path: "/preferences", element: React.createElement(Page, { title: "Preferences", text: "Set your style preferences." }) }),
+            React.createElement(Route, { path: "/favorites", element: React.createElement(Page, { title: "Favorites", text: "Your saved outfits." }) })
           )
         )
       );
     }
 
+    // Render App
     ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App, null));
   </script>
 </body>
