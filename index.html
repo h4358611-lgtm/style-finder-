@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Auriant – Style Finder</title>
 
-  <!-- React UMD -->
+  <!-- React -->
   <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
 
-  <!-- React Router DOM UMD -->
+  <!-- React Router -->
   <script src="https://unpkg.com/react-router-dom@6/umd/react-router-dom.development.js" crossorigin></script>
 
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide-react/dist/lucide-react.umd.js" crossorigin></script>
+  <!-- Lucide Icons (CORRECT UMD) -->
+  <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.min.js" crossorigin></script>
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -29,7 +29,10 @@
     function Navbar() {
       return React.createElement(
         "div",
-        { className: "fixed top-0 left-0 right-0 z-50 bg-black/70 backdrop-blur px-6 py-4 text-2xl font-semibold" },
+        {
+          className:
+            "fixed top-0 left-0 right-0 z-50 bg-black/70 backdrop-blur px-6 py-4 text-2xl font-semibold",
+        },
         "Auriant"
       );
     }
@@ -44,8 +47,11 @@
 
       return React.createElement(
         "aside",
-        { className: "hidden md:block fixed top-16 left-0 bottom-0 w-64 p-4 bg-black/30" },
-        nav.map(i =>
+        {
+          className:
+            "hidden md:block fixed top-16 left-0 bottom-0 w-64 p-4 bg-black/30",
+        },
+        nav.map((i) =>
           React.createElement(
             Link,
             {
@@ -74,15 +80,20 @@
 
       return React.createElement(
         "div",
-        { className: "md:hidden fixed bottom-0 left-0 right-0 bg-black/80 flex justify-around py-3" },
-        nav.map(i =>
+        {
+          className:
+            "md:hidden fixed bottom-0 left-0 right-0 bg-black/80 flex justify-around py-3",
+        },
+        nav.map((i) =>
           React.createElement(
             Link,
             { key: i.path, to: i.path },
             React.createElement(i.icon, {
               className:
                 "w-6 h-6 " +
-                (loc.pathname === i.path ? "text-white" : "text-white/50"),
+                (loc.pathname === i.path
+                  ? "text-white"
+                  : "text-white/50"),
             })
           )
         )
@@ -93,8 +104,16 @@
       return React.createElement(
         "div",
         { className: "pt-28" },
-        React.createElement("h1", { className: "text-3xl font-bold mb-3" }, title),
-        React.createElement("p", { className: "text-white/70" }, text)
+        React.createElement(
+          "h1",
+          { className: "text-3xl font-bold mb-3" },
+          title
+        ),
+        React.createElement(
+          "p",
+          { className: "text-white/70" },
+          text
+        )
       );
     }
 
