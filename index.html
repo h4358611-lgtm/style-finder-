@@ -12,8 +12,8 @@
   <!-- React Router -->
   <script src="https://unpkg.com/react-router-dom@6/umd/react-router-dom.development.js" crossorigin></script>
 
-  <!-- Lucide Icons (CORRECT UMD) -->
-  <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.min.js" crossorigin></script>
+  <!-- Lucide Icons (UMD – WORKS) -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" crossorigin></script>
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -24,7 +24,7 @@
 
   <script>
     const { HashRouter, Routes, Route, Link, useLocation } = ReactRouterDOM;
-    const { Home, User, Heart } = LucideReact;
+    const { Home, User, Heart } = lucide;
 
     function Navbar() {
       return React.createElement(
@@ -63,7 +63,7 @@
                   ? "bg-white text-black"
                   : "hover:bg-white/10"),
             },
-            React.createElement(i.icon, { className: "w-5 h-5" }),
+            React.createElement(i.icon, { size: 20 }),
             i.title
           )
         )
@@ -89,11 +89,11 @@
             Link,
             { key: i.path, to: i.path },
             React.createElement(i.icon, {
+              size: 24,
               className:
-                "w-6 h-6 " +
-                (loc.pathname === i.path
+                loc.pathname === i.path
                   ? "text-white"
-                  : "text-white/50"),
+                  : "text-white/50",
             })
           )
         )
@@ -156,10 +156,8 @@
       );
     }
 
-    ReactDOM.render(
-      React.createElement(App),
-      document.getElementById("root")
-    );
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(React.createElement(App));
   </script>
 </body>
 </html>
