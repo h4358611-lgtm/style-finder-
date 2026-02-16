@@ -3,150 +3,170 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Auriant – Filterable Mega Catalog</title>
+<title>Auriant – Style Finder</title>
 
 <!-- React -->
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 
-<!-- React Router -->
+<!-- Router -->
 <script src="https://unpkg.com/react-router-dom@6/umd/react-router-dom.development.js"></script>
 
-<!-- Icons -->
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-
-<!-- TailwindCSS -->
+<!-- Tailwind -->
 <script src="https://cdn.tailwindcss.com"></script>
 
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- stop favicon 404 -->
+<link rel="icon" href="data:,">
 
 <style>
-  body { font-family: Inter, sans-serif; }
+body{font-family:system-ui,Arial}
 </style>
 </head>
+
 <body class="bg-gradient-to-br from-neutral-900 to-neutral-800 text-white">
 <div id="root"></div>
 
 <script>
 const { HashRouter, Routes, Route, Link, useLocation } = ReactRouterDOM;
-const { Home, User, Heart } = lucide;
 
-/* ---------- BASE PRODUCTS ---------- */
-const curatedProducts = [
-  { id: 'gucci_jackie_mini', brand: "Gucci", name: "Gucci Jackie Mini Bag", priceEUR: 1385, img: "https://picsum.photos/400/600?random=101", url: "https://www.gucci.com" },
-  { id: 'nike_tech_fleece', brand: "Nike", name: "Nike Tech Fleece Hoodie", priceEUR: 120, img: "https://picsum.photos/400/600?random=102", url: "https://www.nike.com" },
-  { id: 'adidas_originals', brand: "Adidas", name: "Adidas Originals Tracksuit", priceEUR: 110, img: "https://picsum.photos/400/600?random=103", url: "https://www.adidas.com" },
-  { id: 'zara_wool_coat', brand: "Zara", name: "Zara Wool Coat", priceEUR: 149, img: "https://picsum.photos/400/600?random=104", url: "https://www.zara.com" },
-  { id: 'hm_tailored_blazer', brand: "H&M", name: "H&M Tailored Blazer", priceEUR: 89, img: "https://picsum.photos/400/600?random=105", url: "https://www2.hm.com" }
-];
+/* simple icons (no CDN needed) */
+const Home = () => React.createElement("span",null,"🏠");
+const User = () => React.createElement("span",null,"👤");
+const HeartIcon = ({active}) =>
+  React.createElement("span",{className:active?"text-red-500":"text-white/40"},"❤️");
 
-const brandList = ["Gucci","Nike","Adidas","Zara","H&M","Prada","Dior","Louis Vuitton","Puma","Reebok","Supreme","Levi's"];
-const ITEMS_PER_BRAND = 20;
 
-function randomInRange(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+/* ---------- PRODUCTS ---------- */
+const brands = ["Gucci","Nike","Adidas","Zara","H&M","Prada","Dior","Louis Vuitton","Puma","Reebok"];
+const ITEMS_PER_BRAND = 40;
 
-let generatedProducts = [];
-brandList.forEach(brand=>{
+function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+
+let products=[];
+
+brands.forEach(b=>{
   for(let i=0;i<ITEMS_PER_BRAND;i++){
-    const base = curatedProducts.find(p=>p.brand===brand);
-    const id = `${brand.toLowerCase()}_${i}`;
-    const name = base ? `${base.name} Variant ${i+1}` : `${brand} Item ${i+1}`;
-    let priceEUR;
-    if(["Gucci","Dior","Louis Vuitton","Prada"].includes(brand)) priceEUR=randomInRange(800,3500);
-    else if(["Nike","Adidas","Puma","Reebok","Supreme"].includes(brand)) priceEUR=randomInRange(80,220);
-    else priceEUR=randomInRange(30,180);
-    generatedProducts.push({id,brand,name,priceEUR,img:`https://picsum.photos/400/600?random=${Math.floor(Math.random()*1000)+200}`,url:`https://www.${brand.replace(" ","").toLowerCase()}.com`});
+    let price;
+    if(["Gucci","Prada","Dior","Louis Vuitton"].includes(b)) price=rand(900,4000);
+    else if(["Nike","Adidas","Puma","Reebok"].includes(b)) price=rand(80,220);
+    else price=rand(40,180);
+
+    products.push({
+      id:b+i,
+      brand:b,
+      name:`${b} Item ${i+1}`,
+      price,
+      img:`https://picsum.photos/400/600?random=${i+b.length}`,
+      url:`https://www.${b.replace(" ","").toLowerCase()}.com`
+    });
   }
 });
-const products = [...curatedProducts,...generatedProducts];
 
-/* ---------- NAVBAR ---------- */
-function Navbar(){ return React.createElement("div",{className:"fixed top-0 left-0 right-0 z-50 bg-black/60 backdrop-blur px-6 py-4 text-2xl font-semibold"},"Auriant");}
 
-/* ---------- SIDEBAR ---------- */
+/* ---------- NAV ---------- */
+function Navbar(){
+  return React.createElement("div",
+    {className:"fixed top-0 left-0 right-0 bg-black/70 backdrop-blur px-6 py-4 text-2xl font-semibold z-50"},
+    "Auriant"
+  );
+}
+
 function Sidebar(){
-  const loc = useLocation();
-  const nav = [{ title:"Discover",path:"/",icon:Home},{title:"Preferences",path:"/preferences",icon:User},{title:"Favorites",path:"/favorites",icon:Heart}];
-  return React.createElement("aside",{className:"hidden md:block fixed top-16 left-0 bottom-0 w-64 p-4 bg-black/30 backdrop-blur-lg"},
-    nav.map(i=>React.createElement(Link,{key:i.title,to:i.path,className:"flex items-center gap-3 px-4 py-3 rounded-xl mb-2 "+(loc.pathname===i.path?"bg-white text-black":"hover:bg-white/10")},React.createElement(i.icon,{size:20}),i.title))
-  );
-}
-
-/* ---------- MOBILE NAV ---------- */
-function MobileNav(){
   const loc=useLocation();
-  const nav=[{path:"/",icon:Home},{path:"/preferences",icon:User},{path:"/favorites",icon:Heart}];
-  return React.createElement("div",{className:"md:hidden fixed bottom-0 left-0 right-0 bg-black/80 flex justify-around py-3"},
-    nav.map(i=>React.createElement(Link,{key:i.path,to:i.path},React.createElement(i.icon,{size:24,className:loc.pathname===i.path?"text-white":"text-white/50"})))
+  const nav=[
+    {path:"/",title:"Discover",icon:Home},
+    {path:"/favorites",title:"Favorites",icon:HeartIcon},
+    {path:"/preferences",title:"Preferences",icon:User}
+  ];
+
+  return React.createElement("aside",
+    {className:"hidden md:block fixed top-16 left-0 bottom-0 w-64 bg-black/30 p-4"},
+    nav.map(n=>
+      React.createElement(Link,{
+        key:n.path,
+        to:n.path,
+        className:"flex gap-3 items-center px-4 py-3 rounded-xl mb-2 "+(loc.pathname===n.path?"bg-white text-black":"hover:bg-white/10")
+      },
+      React.createElement(n.icon,{active:true}),
+      n.title
+    ))
   );
 }
 
-/* ---------- DISCOVER w/ FILTER ---------- */
+
+/* ---------- DISCOVER ---------- */
 function Discover(){
-  const [visibleCount,setVisibleCount]=React.useState(24);
+  const [brand,setBrand]=React.useState("All");
   const [fav,setFav]=React.useState(JSON.parse(localStorage.getItem("fav")||"[]"));
-  const [selectedBrand,setSelectedBrand]=React.useState("All");
-  const [priceRange,setPriceRange]=React.useState([0,5000]);
-  const currency="SAR";
-  const [rates,setRates]=React.useState(null);
 
-  React.useEffect(()=>{ fetch("https://api.exchangerate.host/latest?base=EUR").then(r=>r.json()).then(data=>setRates(data.rates)); },[]);
-  React.useEffect(()=>{function onScroll(){ if(window.innerHeight+window.scrollY>=document.body.offsetHeight-200) setVisibleCount(vc=>Math.min(vc+24,products.length)); } window.addEventListener("scroll",onScroll); return ()=>window.removeEventListener("scroll",onScroll);},[]);
+  function toggle(e,id){
+    e.preventDefault();
+    const f=fav.includes(id)?fav.filter(x=>x!==id):[...fav,id];
+    setFav(f);
+    localStorage.setItem("fav",JSON.stringify(f));
+  }
 
-  function toggleFav(e,id){ e.preventDefault(); e.stopPropagation(); const updated=fav.includes(id)?fav.filter(f=>f!==id):[...fav,id]; setFav(updated); localStorage.setItem("fav",JSON.stringify(updated)); }
-  function priceConvert(eur){ if(!rates) return "..."; return (eur*rates[currency]).toFixed(2); }
-
-  let filtered = products.filter(p=>
-    (selectedBrand==="All"||p.brand===selectedBrand)&&p.priceEUR>=priceRange[0]&&p.priceEUR<=priceRange[1]
-  );
+  const filtered=products.filter(p=>brand==="All"||p.brand===brand);
 
   return React.createElement("div",{className:"pt-28"},
-    React.createElement("div",{className:"flex flex-wrap gap-3 mb-4"},
-      React.createElement("select",{value:selectedBrand,onChange:e=>setSelectedBrand(e.target.value),className:"px-3 py-2 rounded bg-black/30"},
-        React.createElement("option",{value:"All"},"All Brands"),
-        brandList.map(b=>React.createElement("option",{key:b,value:b},b))
-      ),
-      React.createElement("input",{type:"range",min:0,max:5000,value:priceRange[1],onChange:e=>setPriceRange([0,+e.target.value]),className:"w-48"})
+
+    React.createElement("select",{
+      value:brand,
+      onChange:e=>setBrand(e.target.value),
+      className:"mb-6 px-3 py-2 rounded bg-black/40"
+    },
+      React.createElement("option",{value:"All"},"All Brands"),
+      brands.map(b=>React.createElement("option",{key:b,value:b},b))
     ),
-    React.createElement("div",{className:"mb-2"},"Max Price: ",priceRange[1]," EUR"),
+
     React.createElement("div",{className:"grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"},
-      filtered.slice(0,visibleCount).map(item=>React.createElement("a",{key:item.id,href:item.url,target:"_blank",className:"group relative overflow-hidden rounded-2xl bg-white/10 backdrop-blur-lg transition hover:-translate-y-1"},
-        React.createElement("img",{src:item.img,className:"w-full h-72 object-cover group-hover:scale-105 transition"}),
-        React.createElement("div",{className:"absolute top-3 left-3 bg-black/70 px-2 py-1 rounded-full text-sm"},currency+" "+priceConvert(item.priceEUR)),
-        React.createElement("div",{className:"p-3 flex justify-between items-center"},item.name,
-          React.createElement(Heart,{size:20,onClick:e=>toggleFav(e,item.id),className:fav.includes(item.id)?"text-red-500":"text-white/50"})
+      filtered.map(item=>
+        React.createElement("a",{
+          key:item.id,
+          href:item.url,
+          target:"_blank",
+          className:"bg-white/10 rounded-2xl overflow-hidden hover:-translate-y-1 transition block"
+        },
+          React.createElement("img",{src:item.img,className:"w-full h-72 object-cover"}),
+
+          React.createElement("div",{className:"p-3 flex justify-between items-center"},
+            React.createElement("div",null,
+              React.createElement("div",{className:"text-sm text-white/60"},item.brand),
+              React.createElement("div",{className:"font-medium"},item.name),
+              React.createElement("div",{className:"text-white/80"},"€"+item.price)
+            ),
+            React.createElement("span",{onClick:e=>toggle(e,item.id)},
+              React.createElement(HeartIcon,{active:fav.includes(item.id)})
+            )
+          )
         )
-      ))
+      )
     )
   );
 }
 
+
 /* ---------- FAVORITES ---------- */
 function Favorites(){
-  const fav = JSON.parse(localStorage.getItem("fav")||"[]");
-  const filtered = products.filter(p=>fav.includes(p.id));
+  const fav=JSON.parse(localStorage.getItem("fav")||"[]");
+  const list=products.filter(p=>fav.includes(p.id));
+
   return React.createElement("div",{className:"pt-28 grid grid-cols-2 md:grid-cols-3 gap-6"},
-    filtered.length===0?"No favorites yet":filtered.map(o=>React.createElement("img",{key:o.id,src:o.img,className:"rounded-xl shadow-lg"}))
+    list.length?list.map(i=>React.createElement("img",{key:i.id,src:i.img,className:"rounded-xl"})):"No favorites yet"
   );
 }
 
-/* ---------- PAGES ---------- */
-function Page({title,text}){
-  return React.createElement("div",{className:"pt-28 px-6"},React.createElement("h1",{className:"text-3xl font-semibold mb-2"},title),React.createElement("p",{className:"text-white/70"},text));
-}
 
 /* ---------- APP ---------- */
 function App(){
   return React.createElement(HashRouter,null,
     React.createElement(Navbar),
     React.createElement(Sidebar),
-    React.createElement(MobileNav),
     React.createElement("main",{className:"md:ml-64 px-6 pb-20"},
       React.createElement(Routes,null,
         React.createElement(Route,{path:"/",element:React.createElement(Discover)}),
-        React.createElement(Route,{path:"/preferences",element:React.createElement(Page,{title:"Preferences",text:"Customize your style preferences."})}),
-        React.createElement(Route,{path:"/favorites",element:React.createElement(Favorites)})
+        React.createElement(Route,{path:"/favorites",element:React.createElement(Favorites)}),
+        React.createElement(Route,{path:"/preferences",element:React.createElement("div",{className:"pt-28"},"Preferences soon")})
       )
     )
   );
@@ -154,6 +174,5 @@ function App(){
 
 ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
 </script>
-
 </body>
 </html>
