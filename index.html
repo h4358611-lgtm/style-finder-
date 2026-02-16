@@ -5,65 +5,75 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Auriant – Style Finder</title>
 
-<!-- React -->
-<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<!-- React (production = safer + faster) -->
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 
-<!-- Router -->
-<script src="https://unpkg.com/react-router-dom@6/umd/react-router-dom.development.js"></script>
+<!-- React Router -->
+<script src="https://unpkg.com/react-router-dom@6/umd/react-router-dom.production.min.js"></script>
 
 <!-- Tailwind -->
 <script src="https://cdn.tailwindcss.com"></script>
 
-<!-- stop favicon 404 -->
+<!-- remove favicon error -->
 <link rel="icon" href="data:,">
 
 <style>
-body{font-family:system-ui,Arial}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto}
 </style>
 </head>
 
-<body class="bg-gradient-to-br from-neutral-900 to-neutral-800 text-white">
+<body class="bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800 text-white">
 <div id="root"></div>
 
 <script>
 const { HashRouter, Routes, Route, Link, useLocation } = ReactRouterDOM;
 
-/* simple icons (no CDN needed) */
-const Home = () => React.createElement("span",null,"🏠");
-const User = () => React.createElement("span",null,"👤");
+/* ---------------- ICONS (NO LIBRARY) ---------------- */
+const HomeIcon = () => React.createElement("span",null,"🏠");
+const UserIcon = () => React.createElement("span",null,"👤");
 const HeartIcon = ({active}) =>
   React.createElement("span",{className:active?"text-red-500":"text-white/40"},"❤️");
 
 
-/* ---------- PRODUCTS ---------- */
-const brands = ["Gucci","Nike","Adidas","Zara","H&M","Prada","Dior","Louis Vuitton","Puma","Reebok"];
-const ITEMS_PER_BRAND = 40;
+/* ---------------- DATA ---------------- */
+const brands = [
+  "Gucci","Prada","Dior","Louis Vuitton",
+  "Nike","Adidas","Puma","Reebok",
+  "Zara","H&M"
+];
 
-function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+function rand(min,max){
+  return Math.floor(Math.random()*(max-min+1))+min;
+}
 
-let products=[];
+/* generate lots of items */
+let products = [];
 
-brands.forEach(b=>{
-  for(let i=0;i<ITEMS_PER_BRAND;i++){
+brands.forEach(brand=>{
+  for(let i=1;i<=40;i++){
+
     let price;
-    if(["Gucci","Prada","Dior","Louis Vuitton"].includes(b)) price=rand(900,4000);
-    else if(["Nike","Adidas","Puma","Reebok"].includes(b)) price=rand(80,220);
-    else price=rand(40,180);
+    if(["Gucci","Prada","Dior","Louis Vuitton"].includes(brand))
+      price = rand(900,4000);
+    else if(["Nike","Adidas","Puma","Reebok"].includes(brand))
+      price = rand(80,220);
+    else
+      price = rand(30,180);
 
     products.push({
-      id:b+i,
-      brand:b,
-      name:`${b} Item ${i+1}`,
+      id: brand+i,
+      brand,
+      name: brand + " Item " + i,
       price,
-      img:`https://picsum.photos/400/600?random=${i+b.length}`,
-      url:`https://www.${b.replace(" ","").toLowerCase()}.com`
+      img: "https://picsum.photos/400/600?random="+(i+brand.length),
+      url: "https://www."+brand.replace(" ","").toLowerCase()+".com"
     });
   }
 });
 
 
-/* ---------- NAV ---------- */
+/* ---------------- NAVBAR ---------------- */
 function Navbar(){
   return React.createElement("div",
     {className:"fixed top-0 left-0 right-0 bg-black/70 backdrop-blur px-6 py-4 text-2xl font-semibold z-50"},
@@ -71,71 +81,98 @@ function Navbar(){
   );
 }
 
+
+/* ---------------- SIDEBAR ---------------- */
 function Sidebar(){
-  const loc=useLocation();
-  const nav=[
-    {path:"/",title:"Discover",icon:Home},
-    {path:"/favorites",title:"Favorites",icon:HeartIcon},
-    {path:"/preferences",title:"Preferences",icon:User}
+  const loc = useLocation();
+
+  const links = [
+    {path:"/", label:"Discover", icon:HomeIcon},
+    {path:"/favorites", label:"Favorites", icon:HeartIcon},
+    {path:"/preferences", label:"Preferences", icon:UserIcon}
   ];
 
   return React.createElement("aside",
     {className:"hidden md:block fixed top-16 left-0 bottom-0 w-64 bg-black/30 p-4"},
-    nav.map(n=>
+    links.map(l =>
       React.createElement(Link,{
-        key:n.path,
-        to:n.path,
-        className:"flex gap-3 items-center px-4 py-3 rounded-xl mb-2 "+(loc.pathname===n.path?"bg-white text-black":"hover:bg-white/10")
+        key:l.path,
+        to:l.path,
+        className:"flex items-center gap-3 px-4 py-3 rounded-xl mb-2 "+
+          (loc.pathname===l.path?"bg-white text-black":"hover:bg-white/10")
       },
-      React.createElement(n.icon,{active:true}),
-      n.title
-    ))
+        React.createElement(l.icon,{active:true}),
+        l.label
+      )
+    )
   );
 }
 
 
-/* ---------- DISCOVER ---------- */
+/* ---------------- DISCOVER PAGE ---------------- */
 function Discover(){
-  const [brand,setBrand]=React.useState("All");
-  const [fav,setFav]=React.useState(JSON.parse(localStorage.getItem("fav")||"[]"));
+
+  const [brand,setBrand] = React.useState("All");
+  const [fav,setFav] = React.useState(JSON.parse(localStorage.getItem("fav")||"[]"));
 
   function toggle(e,id){
     e.preventDefault();
-    const f=fav.includes(id)?fav.filter(x=>x!==id):[...fav,id];
-    setFav(f);
-    localStorage.setItem("fav",JSON.stringify(f));
+    e.stopPropagation();
+
+    const updated = fav.includes(id)
+      ? fav.filter(x=>x!==id)
+      : [...fav,id];
+
+    setFav(updated);
+    localStorage.setItem("fav",JSON.stringify(updated));
   }
 
-  const filtered=products.filter(p=>brand==="All"||p.brand===brand);
+  const filtered = products.filter(p =>
+    brand==="All" || p.brand===brand
+  );
 
   return React.createElement("div",{className:"pt-28"},
 
+    /* filter */
     React.createElement("select",{
       value:brand,
       onChange:e=>setBrand(e.target.value),
       className:"mb-6 px-3 py-2 rounded bg-black/40"
     },
       React.createElement("option",{value:"All"},"All Brands"),
-      brands.map(b=>React.createElement("option",{key:b,value:b},b))
+      brands.map(b =>
+        React.createElement("option",{key:b,value:b},b)
+      )
     ),
 
-    React.createElement("div",{className:"grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"},
-      filtered.map(item=>
+    /* grid */
+    React.createElement("div",
+      {className:"grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"},
+
+      filtered.map(item =>
         React.createElement("a",{
           key:item.id,
           href:item.url,
           target:"_blank",
           className:"bg-white/10 rounded-2xl overflow-hidden hover:-translate-y-1 transition block"
         },
-          React.createElement("img",{src:item.img,className:"w-full h-72 object-cover"}),
 
-          React.createElement("div",{className:"p-3 flex justify-between items-center"},
+          React.createElement("img",{
+            src:item.img,
+            className:"w-full h-72 object-cover"
+          }),
+
+          React.createElement("div",
+            {className:"p-3 flex justify-between items-center"},
+
             React.createElement("div",null,
               React.createElement("div",{className:"text-sm text-white/60"},item.brand),
               React.createElement("div",{className:"font-medium"},item.name),
               React.createElement("div",{className:"text-white/80"},"€"+item.price)
             ),
-            React.createElement("span",{onClick:e=>toggle(e,item.id)},
+
+            React.createElement("span",
+              {onClick:e=>toggle(e,item.id)},
               React.createElement(HeartIcon,{active:fav.includes(item.id)})
             )
           )
@@ -146,23 +183,37 @@ function Discover(){
 }
 
 
-/* ---------- FAVORITES ---------- */
+/* ---------------- FAVORITES ---------------- */
 function Favorites(){
-  const fav=JSON.parse(localStorage.getItem("fav")||"[]");
-  const list=products.filter(p=>fav.includes(p.id));
+  const fav = JSON.parse(localStorage.getItem("fav")||"[]");
 
-  return React.createElement("div",{className:"pt-28 grid grid-cols-2 md:grid-cols-3 gap-6"},
-    list.length?list.map(i=>React.createElement("img",{key:i.id,src:i.img,className:"rounded-xl"})):"No favorites yet"
+  const list = products.filter(p => fav.includes(p.id));
+
+  return React.createElement("div",
+    {className:"pt-28 grid grid-cols-2 md:grid-cols-3 gap-6"},
+
+    list.length
+      ? list.map(i =>
+          React.createElement("img",{
+            key:i.id,
+            src:i.img,
+            className:"rounded-xl"
+          })
+        )
+      : "No favorites yet"
   );
 }
 
 
-/* ---------- APP ---------- */
+/* ---------------- APP ---------------- */
 function App(){
   return React.createElement(HashRouter,null,
     React.createElement(Navbar),
     React.createElement(Sidebar),
-    React.createElement("main",{className:"md:ml-64 px-6 pb-20"},
+
+    React.createElement("main",
+      {className:"md:ml-64 px-6 pb-20"},
+
       React.createElement(Routes,null,
         React.createElement(Route,{path:"/",element:React.createElement(Discover)}),
         React.createElement(Route,{path:"/favorites",element:React.createElement(Favorites)}),
@@ -172,7 +223,9 @@ function App(){
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
+ReactDOM.createRoot(document.getElementById("root"))
+  .render(React.createElement(App));
 </script>
+
 </body>
 </html>
